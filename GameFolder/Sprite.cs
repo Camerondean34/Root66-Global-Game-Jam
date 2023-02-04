@@ -5,9 +5,9 @@ using System;
 
 namespace Root66.GameFolder
 {
-    public class Sprite
+    internal class Sprite
     {
-        private Texture2D texture;
+        protected Texture2D texture;
         protected Rectangle rectangle;
         protected Color colour = Color.White;
 
@@ -48,6 +48,11 @@ namespace Root66.GameFolder
         public virtual void Reset()
         {
             SetPosition(xResetPosition, yResetPosition);
+        }
+
+        public bool IntersectsWith(Sprite s)
+        {
+            return rectangle.Intersects(s.rectangle);
         }
     }
 }

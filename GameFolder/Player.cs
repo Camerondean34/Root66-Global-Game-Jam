@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.Direct2D1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,22 +10,27 @@ using System.Threading.Tasks;
 
 namespace Root66.GameFolder
 {
-    internal class Player : Sprite
+    internal sealed class Player : Sprite
     {
-        Background bg;
+        public const int MaxHealth = 100;
+        public float Health { get; private set; }
 
-        int screenHeight;
-        int drawHeight;
-        float speed;
-        float speedRatio;
+        public const int MaxFuel = 100;
+        public float Fuel { get; private set; }
 
-        public Player(int pScreenHeight, Texture2D pSpriteTexture, int pDrawHeight, float pSpeed, Background pBg) : base(pSpriteTexture, pDrawHeight * (pSpriteTexture.Width / pSpriteTexture.Height), pDrawHeight, 0, pScreenHeight / 2)
+        public bool Alive { get { return Health > 0 && Fuel > 0; } }
+
+        private int screenHeight;
+        private int drawHeight;
+        public float speed { get; private set; }
+        public float speedRatio { get; private set; }
+
+        public Player(int pScreenHeight, Texture2D pSpriteTexture, int pDrawHeight, float pSpeed) : base(pSpriteTexture, pDrawHeight * (pSpriteTexture.Width / pSpriteTexture.Height), pDrawHeight, 10, pScreenHeight / 2)
         {
             screenHeight = pScreenHeight;
             drawHeight = pDrawHeight;
             speed = pSpeed;
-            colour = Color.Blue;
-            bg = pBg;
+            colour = Color.CornflowerBlue;
         }
 
         public override void Update(GameTime deltaTime)
@@ -32,13 +38,12 @@ namespace Root66.GameFolder
             if (yPosition < screenHeight * 0.22 || yPosition > (screenHeight * 0.725) - drawHeight)
             {
                 speedRatio = 0.5f;
+                GiveHealth(-0.2f);
             }
             else
             {
                 speedRatio = 1;
             }
-            bg.speedRatio = speedRatio;
-
             float yChange = speed * speedRatio;
 
             KeyboardState keyboardState = Keyboard.GetState();
@@ -51,8 +56,26 @@ namespace Root66.GameFolder
             {
                 yPosition += yChange;
             }
-            base.Update(deltaTime);
+            GiveFuel(-0.05f * speedRatio);
         }
 
+        public override void Reset()
+        {
+            Health = MaxHealth;
+            Fuel = MaxFuel;
+            base.Reset();
+        }
+
+        public void GiveHealth(float pHealth)
+        {
+            Health += pHealth;
+            if (Health > MaxHealth) Health = MaxHealth;
+        }
+
+        public void GiveFuel(float pFuel)
+        {
+            Fuel += pFuel;
+            if (Fuel > MaxFuel) Fuel = MaxFuel;
+        }
     }
 }

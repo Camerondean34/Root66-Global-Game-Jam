@@ -2,8 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System;
 using Root66.GameFolder;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
+using Root66.GameFolder.Obsticals;
 
 namespace Root66
 {
@@ -12,8 +13,16 @@ namespace Root66
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Texture2D backgroundTexture;
+        private int _screenWidth;
+        private int _screenHeight;
+
         private Texture2D carTexture;
+        private Texture2D fuelTexture;
+
+        private Player player;
+        private Background background;
+        private DisplayBar healthBar;
+        private DisplayBar fuelBar;
 
         List<Sprite> gameSprites = new List<Sprite>();
 
@@ -35,16 +44,24 @@ namespace Root66
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            int screenWidth = GraphicsDevice.Viewport.Width;
-            int screenHeight = GraphicsDevice.Viewport.Height;
+            _screenWidth = GraphicsDevice.Viewport.Width;
+            _screenHeight = GraphicsDevice.Viewport.Height;
 
             // TODO: use this.Content to load your game content here
-            backgroundTexture = Content.Load<Texture2D>("Background");
+            Texture2D backgroundTexture = Content.Load<Texture2D>("Background");
             carTexture = Content.Load<Texture2D>("CarWhite");
+            fuelTexture = Content.Load<Texture2D>("Fuel");
 
-            Background background = new Background(screenHeight, backgroundTexture, 10f);
+            background = new Background(_screenHeight, backgroundTexture, 10f);
             gameSprites.Add(background);
-            gameSprites.Add(new Player(screenHeight, carTexture, screenHeight / 10, 3, background));
+            player = new Player(_screenHeight, carTexture, _screenHeight / 10, 3);
+            gameSprites.Add(player);
+            Texture2D blankRect = new Texture2D(GraphicsDevice, 1, 1);
+            blankRect.SetData(new[] { Color.White });
+            healthBar = new DisplayBar(blankRect, _screenWidth / 5, _screenHeight / 30, _screenWidth / 10 * 7, _screenHeight / 30 * 2, Color.Red);
+            gameSprites.Add(healthBar);
+            fuelBar = new DisplayBar(blankRect, _screenWidth / 5, _screenHeight / 30, _screenWidth / 10 * 3, _screenHeight / 30 * 2, Color.YellowGreen);
+            gameSprites.Add(fuelBar);
         }
 
         protected override void Update(GameTime gameTime)
@@ -53,18 +70,50 @@ namespace Root66
                 Exit();
 
             // TODO: Add your update logic here
-            foreach (var sprite in gameSprites)
+            // Do a dice roll
+            if (player.Alive)
             {
-                sprite.Update(gameTime);
+                // Update Player, Background, and Stat Bars
+                player.Update(gameTime);
+                background.SpeedRatio = player.speedRatio;
+                background.Update(gameTime);
+                healthBar.ProgressRatio = player.Health / Player.MaxHealth;
+                fuelBar.ProgressRatio = player.Fuel / Player.MaxFuel;
+
+                // Update each obstical, and check to see if Player has collided
+                for (int index = 0; index < gameSprites.Count; index++)
+                {
+                    if (gameSprites[index] is Obstical obstical)
+                    {
+                        obstical.xChange = background.speed * background.SpeedRatio;
+                        obstical.Update(gameTime);
+
+                        if (obstical.IntersectsWith(player))
+                        {
+                            obstical.Effect(player);
+                            gameSprites.RemoveAt(index);
+                            index--;
+                        }
+                    }
+                }
+
+                // Generate new obsticals
+                //TODO Make this based on game time?
+                int random = new Random().Next(6000); // Assuming 60 FPS * 100
+                if (random < 10) // 5%
+                {
+                    int size = _screenHeight / 20;
+                    gameSprites.Add(new Fuel(fuelTexture, _screenWidth, _screenHeight, size, size));
+                }
             }
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.LawnGreen);
 
-            // TODO: Add your drawing code here
+            // Draw each game sprite
             _spriteBatch.Begin();
             foreach (var sprite in gameSprites)
             {

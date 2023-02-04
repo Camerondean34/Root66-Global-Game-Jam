@@ -12,13 +12,13 @@ namespace Root66.GameFolder
     {
         private int width;
 
-        private float speed;
-        private float _speedRatio = 1;
-        public float speedRatio { get { return _speedRatio; } set { if (value >= 0 && value <= 1) { _speedRatio = value; } } }
+        public float speed { get; private set; }
+        private float _SpeedRatio = 1;
+        public float SpeedRatio { get { return _SpeedRatio; } set { if (value >= 0 && value <= 1) { _SpeedRatio = value; } } }
 
         private Sprite secondSprite;
 
-        public Background(int pScreenHeight, Texture2D pSpriteTexture, float pSpeed) : base(pSpriteTexture, (int)(pScreenHeight * ((float)pSpriteTexture.Width / pSpriteTexture.Height)), pScreenHeight, (int)(pScreenHeight * ((float)pSpriteTexture.Width / pSpriteTexture.Height)), 0)
+        public Background(int pScreenHeight, Texture2D pSpriteTexture, float pSpeed) : base(pSpriteTexture, (int)(pScreenHeight * ((float)pSpriteTexture.Width / pSpriteTexture.Height)), pScreenHeight, 0, 0)
         {
             speed = pSpeed;
             width = (int)(pScreenHeight * ((float)pSpriteTexture.Width / pSpriteTexture.Height));
@@ -27,17 +27,17 @@ namespace Root66.GameFolder
 
         public override void Update(GameTime deltaTime)
         {
-            float xChange = speed * speedRatio;
+            float xChange = speed * SpeedRatio;
             xPosition -= xChange;
             secondSprite.SetPosition(secondSprite.xPosition - xChange, secondSprite.yPosition);
 
             if (xPosition < -width)
             {
-                SetPosition(width, 0);
+                SetPosition(xPosition + (2 * width), 0);
             }
-            else if (secondSprite.xPosition < -width)
+            if (secondSprite.xPosition < -width)
             {
-                secondSprite.Reset();
+                secondSprite.SetPosition(secondSprite.xPosition + (2 * width), 0);
             }
             base.Update(deltaTime);
         }
@@ -46,12 +46,6 @@ namespace Root66.GameFolder
         {
             secondSprite.Draw(spriteBatch);
             base.Draw(spriteBatch);
-        }
-
-        public override void Reset()
-        {
-            SetPosition(0, 0);
-            if (secondSprite != null) secondSprite.Reset();
         }
     }
 }
