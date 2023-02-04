@@ -10,35 +10,30 @@ namespace Root66.GameFolder
 {
     internal class Background : Sprite
     {
-        private int screenWidth;
         private int width;
 
         private float speed;
-        private float speedChange;
-        private bool slow;
+        private float _speedRatio = 1;
+        public float speedRatio { get { return _speedRatio; } set { if (value >= 0 && value <= 1) { _speedRatio = value; } } }
 
         private Sprite secondSprite;
 
-        public Background(int pScreenWidth, int pScreenHeight, Texture2D pSpriteTexture, float pSpeed) : base(pSpriteTexture, (int)(pScreenHeight * (pSpriteTexture.Width / (float)pSpriteTexture.Height)), pScreenHeight, pScreenHeight * ((float)pSpriteTexture.Width / (float)pSpriteTexture.Height), 0)
+        public Background(int pScreenHeight, Texture2D pSpriteTexture, float pSpeed) : base(pSpriteTexture, (int)(pScreenHeight * ((float)pSpriteTexture.Width / pSpriteTexture.Height)), pScreenHeight, (int)(pScreenHeight * ((float)pSpriteTexture.Width / pSpriteTexture.Height)), 0)
         {
-            screenWidth = pScreenWidth;
             speed = pSpeed;
             width = (int)(pScreenHeight * ((float)pSpriteTexture.Width / pSpriteTexture.Height));
             secondSprite = new Sprite(pSpriteTexture, width, pScreenHeight, width, 0);
-            SetPosition(0, 0);
         }
 
-        public override void Update(float deltaTime)
+        public override void Update(GameTime deltaTime)
         {
-            if (slow) { speedChange = 0.5f; }
-            else { speedChange = 1f; }
-
-            SetPosition(xPosition - (speed * speedChange), yPosition);
-            secondSprite.SetPosition(secondSprite.xPosition - (speed * speedChange), yPosition);
+            float xChange = speed * speedRatio;
+            xPosition -= xChange;
+            secondSprite.SetPosition(secondSprite.xPosition - xChange, secondSprite.yPosition);
 
             if (xPosition < -width)
             {
-                Reset();
+                SetPosition(width, 0);
             }
             else if (secondSprite.xPosition < -width)
             {
@@ -53,9 +48,10 @@ namespace Root66.GameFolder
             base.Draw(spriteBatch);
         }
 
-        public void SetSlow(bool pSlow)
+        public override void Reset()
         {
-            slow = pSlow;
+            SetPosition(0, 0);
+            if (secondSprite != null) secondSprite.Reset();
         }
     }
 }

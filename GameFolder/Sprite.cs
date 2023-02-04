@@ -17,19 +17,6 @@ namespace Root66.GameFolder
         private float xResetPosition;
         private float yResetPosition;
 
-        public Sprite(int pScreenWidth, int pScreenHeight, Texture2D pSpriteTexture, int pDrawWidth, float pResetX, float pResetY)
-        {
-            texture = pSpriteTexture;
-            xResetPosition = pResetX;
-            yResetPosition = pResetY;
-
-            float aspect = pSpriteTexture.Width / pSpriteTexture.Height;
-            int height = (int)Math.Round(pDrawWidth / aspect);
-            rectangle = new Rectangle(0, 0, pDrawWidth, height);
-
-            Reset();
-        }
-
         public Sprite(Texture2D pSpriteTexture, int pDrawWidth, int pDrawHeight, float pResetX, float pResetY)
         {
             texture = pSpriteTexture;
@@ -53,7 +40,7 @@ namespace Root66.GameFolder
             spriteBatch.Draw(texture, rectangle, colour);
         }
 
-        public virtual void Update(float deltaTime)
+        public virtual void Update(GameTime deltaTime)
         {
 
         }

@@ -12,6 +12,9 @@ namespace Root66
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private Texture2D backgroundTexture;
+        private Texture2D carTexture;
+
         List<Sprite> gameSprites = new List<Sprite>();
 
         public Game1()
@@ -36,9 +39,12 @@ namespace Root66
             int screenHeight = GraphicsDevice.Viewport.Height;
 
             // TODO: use this.Content to load your game content here
-            Background bg = new Background(screenWidth, screenHeight, Content.Load<Texture2D>("Background"), 10f);
-            gameSprites.Add(bg);
-            gameSprites.Add(new Player(screenHeight, Content.Load<Texture2D>("CarWhite"), 3, bg));
+            backgroundTexture = Content.Load<Texture2D>("Background");
+            carTexture = Content.Load<Texture2D>("CarWhite");
+
+            Background background = new Background(screenHeight, backgroundTexture, 10f);
+            gameSprites.Add(background);
+            gameSprites.Add(new Player(screenHeight, carTexture, screenHeight / 10, 3, background));
         }
 
         protected override void Update(GameTime gameTime)
@@ -49,7 +55,7 @@ namespace Root66
             // TODO: Add your update logic here
             foreach (var sprite in gameSprites)
             {
-                sprite.Update(gameTime.ElapsedGameTime.Seconds);
+                sprite.Update(gameTime);
             }
             base.Update(gameTime);
         }

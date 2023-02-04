@@ -14,39 +14,42 @@ namespace Root66.GameFolder
         Background bg;
 
         int screenHeight;
+        int drawHeight;
         float speed;
-        float drag;
+        float speedRatio;
 
-        public Player(int pScreenHeight, Texture2D pSpriteTexture, float pSpeed, Background pBg) : base(pSpriteTexture, (pScreenHeight / 10) * (pSpriteTexture.Width / pSpriteTexture.Height), pScreenHeight / 10, 0, pScreenHeight / 2)
+        public Player(int pScreenHeight, Texture2D pSpriteTexture, int pDrawHeight, float pSpeed, Background pBg) : base(pSpriteTexture, pDrawHeight * (pSpriteTexture.Width / pSpriteTexture.Height), pDrawHeight, 0, pScreenHeight / 2)
         {
             screenHeight = pScreenHeight;
+            drawHeight = pDrawHeight;
             speed = pSpeed;
             colour = Color.Blue;
             bg = pBg;
         }
 
-        public override void Update(float deltaTime)
+        public override void Update(GameTime deltaTime)
         {
-            if (yPosition < 105 || yPosition > 348 - (screenHeight / 10))
+            if (yPosition < screenHeight * 0.22 || yPosition > (screenHeight * 0.725) - drawHeight)
             {
-                drag = 0.5f;
-                bg.SetSlow(true);
+                speedRatio = 0.5f;
             }
             else
             {
-                drag = 1;
-                bg.SetSlow(false);
+                speedRatio = 1;
             }
+            bg.speedRatio = speedRatio;
+
+            float yChange = speed * speedRatio;
 
             KeyboardState keyboardState = Keyboard.GetState();
 
             if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
             {
-                yPosition -= speed * drag;
+                yPosition -= yChange;
             }
             if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
             {
-                yPosition += speed * drag;
+                yPosition += yChange;
             }
             base.Update(deltaTime);
         }
