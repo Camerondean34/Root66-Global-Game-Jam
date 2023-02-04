@@ -9,6 +9,7 @@ namespace Root66.GameFolder
     {
         private Texture2D texture;
         protected Rectangle rectangle;
+        protected Color colour = Color.White;
 
         public float xPosition { get; protected set; }
         public float yPosition { get; protected set; }
@@ -49,7 +50,7 @@ namespace Root66.GameFolder
         {
             rectangle.X = (int)Math.Round(xPosition);
             rectangle.Y = (int)Math.Round(yPosition);
-            spriteBatch.Draw(texture, rectangle, Color.White);
+            spriteBatch.Draw(texture, rectangle, colour);
         }
 
         public virtual void Update(float deltaTime)

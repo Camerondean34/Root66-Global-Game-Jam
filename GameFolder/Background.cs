@@ -12,29 +12,35 @@ namespace Root66.GameFolder
     {
         private int screenWidth;
         private int width;
+
         private float speed;
+        private float speedChange;
+        private bool slow;
 
         private Sprite secondSprite;
 
-        public Background(int pScreenWidth, int pScreenHeight, Texture2D pSpriteTexture, float pSpeed) : base(pSpriteTexture, pScreenHeight * (pSpriteTexture.Width / pSpriteTexture.Height), pScreenHeight, pScreenHeight * (pSpriteTexture.Width / pSpriteTexture.Height), 0)
+        public Background(int pScreenWidth, int pScreenHeight, Texture2D pSpriteTexture, float pSpeed) : base(pSpriteTexture, (int)(pScreenHeight * (pSpriteTexture.Width / (float)pSpriteTexture.Height)), pScreenHeight, pScreenHeight * ((float)pSpriteTexture.Width / (float)pSpriteTexture.Height), 0)
         {
             screenWidth = pScreenWidth;
             speed = pSpeed;
-            width = pScreenHeight * (pSpriteTexture.Width / pSpriteTexture.Height);
+            width = (int)(pScreenHeight * ((float)pSpriteTexture.Width / pSpriteTexture.Height));
             secondSprite = new Sprite(pSpriteTexture, width, pScreenHeight, width, 0);
             SetPosition(0, 0);
         }
 
         public override void Update(float deltaTime)
         {
-            SetPosition(xPosition - speed, yPosition);
-            secondSprite.SetPosition(secondSprite.xPosition - speed, yPosition);
+            if (slow) { speedChange = 0.5f; }
+            else { speedChange = 1f; }
 
-            if (xPosition < 5 - width)
+            SetPosition(xPosition - (speed * speedChange), yPosition);
+            secondSprite.SetPosition(secondSprite.xPosition - (speed * speedChange), yPosition);
+
+            if (xPosition < -width)
             {
                 Reset();
             }
-            else if (secondSprite.xPosition < 5 - width)
+            else if (secondSprite.xPosition < -width)
             {
                 secondSprite.Reset();
             }
@@ -45,6 +51,11 @@ namespace Root66.GameFolder
         {
             secondSprite.Draw(spriteBatch);
             base.Draw(spriteBatch);
+        }
+
+        public void SetSlow(bool pSlow)
+        {
+            slow = pSlow;
         }
     }
 }

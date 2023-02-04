@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using Root66.GameFolder;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 
 namespace Root66
 {
@@ -35,8 +36,9 @@ namespace Root66
             int screenHeight = GraphicsDevice.Viewport.Height;
 
             // TODO: use this.Content to load your game content here
-            gameSprites.Add(new Background(screenWidth, screenHeight, Content.Load<Texture2D>("Background"), 10f));
-            gameSprites.Add(new Sprite(screenWidth, screenHeight, Content.Load<Texture2D>("CarWhite"), 100, 0, 0));
+            Background bg = new Background(screenWidth, screenHeight, Content.Load<Texture2D>("Background"), 10f);
+            gameSprites.Add(bg);
+            gameSprites.Add(new Player(screenHeight, Content.Load<Texture2D>("CarWhite"), 3, bg));
         }
 
         protected override void Update(GameTime gameTime)
