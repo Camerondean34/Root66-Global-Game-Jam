@@ -61,6 +61,12 @@
 /processorParam:TextureFormat=Color
 /build:Cone.png
 
+#begin Crash.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Crash.wav
+
 #begin DeathFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -104,6 +110,12 @@
 /processorParam:TextureFormat=Color
 /build:MenuBackground.png
 
+#begin Music.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music.wav
+
 #begin PersonBack.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -115,6 +127,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:PersonBack.png
+
+#begin PersonDeath.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PersonDeath.wav
 
 #begin PersonFront.png
 /importer:TextureImporter

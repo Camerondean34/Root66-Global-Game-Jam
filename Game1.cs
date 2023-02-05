@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using Root66.GameFolder;
 using Root66.GameFolder.Obsticals;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Root66
 {
@@ -21,6 +22,10 @@ namespace Root66
 
         private SpriteFont deathFont;
         private SpriteFont UIFont;
+
+        private SoundEffectInstance musicInstance;
+        private SoundEffectInstance deathInstance;
+        private SoundEffectInstance crashInstance;
 
         private Texture2D blankTexture;
         private Texture2D menuBackground;
@@ -76,6 +81,13 @@ namespace Root66
             personFrontTexture = Content.Load<Texture2D>("PersonFront");
             personBackTexture = Content.Load<Texture2D>("PersonBack");
             Person.BloodTexture = Content.Load<Texture2D>("Blood");
+
+            SoundEffect music = Content.Load<SoundEffect>("Music");
+            musicInstance = music.CreateInstance();
+            SoundEffect personDeath = Content.Load<SoundEffect>("PersonDeath");
+            deathInstance = personDeath.CreateInstance();
+            SoundEffect crash = Content.Load<SoundEffect>("Crash");
+            crashInstance = crash.CreateInstance();
 
             deathFont = Content.Load<SpriteFont>("DeathFont");
             UIFont = Content.Load<SpriteFont>("UIFont");
@@ -138,6 +150,20 @@ namespace Root66
                             if (obstical.IntersectsWith(player))
                             {
                                 obstical.Effect(player);
+                                if (obstical is Person)
+                                {
+                                    if (deathInstance.State != SoundState.Playing)
+                                    {
+                                        deathInstance.Play();
+                                    }
+                                }
+                                if (obstical is Car)
+                                {
+                                    if (crashInstance.State != SoundState.Playing)
+                                    {
+                                        crashInstance.Play();
+                                    }
+                                }
                                 if (player.Alive && obstical is not Person)
                                 {
                                     gameSprites.RemoveAt(index);
@@ -203,8 +229,12 @@ namespace Root66
                 }
                 else
                 {
-                    KeyboardState keyboardState = Keyboard.GetState();
+                    if (musicInstance.State == SoundState.Playing)
+                    {
+                        musicInstance.Stop();
+                    }
 
+                    KeyboardState keyboardState = Keyboard.GetState();
                     if (keyboardState.IsKeyDown(Keys.Enter) || keyboardState.IsKeyDown(Keys.Space))
                     {
                         _currentScene = Scene.Menu;
@@ -214,10 +244,18 @@ namespace Root66
                 //Update stat bars
                 healthBar.ProgressRatio = player.Health / Player.MaxHealth;
                 fuelBar.ProgressRatio = player.Fuel / Player.MaxFuel;
-                base.Update(gameTime);
             }
             else // Scene is menu
             {
+                if (musicInstance.State != SoundState.Playing)
+                {
+                    musicInstance.Play();
+                }
+                if (crashInstance.State == SoundState.Playing)
+                {
+                    crashInstance.Stop();
+                }
+
                 MouseState mouseState = Mouse.GetState();
                 if (mouseState.LeftButton == ButtonState.Pressed)
                 {
@@ -233,7 +271,7 @@ namespace Root66
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit();
             }
-
+            base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
