@@ -98,12 +98,19 @@ namespace Root66
                 }
 
                 // Generate new obsticals
-                //TODO Make this based on game time?
-                int random = new Random().Next(6000); // Assuming 60 FPS * 100
-                if (random < 10) // 5%
+                if (player.speed * player.speedRatio > 0)
                 {
-                    int size = _screenHeight / 20;
-                    gameSprites.Add(new Fuel(fuelTexture, _screenWidth, _screenHeight, size, size));
+                    //TODO Make this based on game time?
+                    int random = new Random().Next(6000); // Assuming 60 FPS * 100
+                    if (random < 10) // 5%
+                    {
+                        int size = _screenHeight / 20;
+                        gameSprites.Add(new Fuel(fuelTexture, _screenWidth, _screenHeight, size, size));
+                    }
+                    //TODO Obsticals to add:
+                    // Traffic Cones
+                    // Engines for health
+                    // People, and then police to come bust you if you hit them
                 }
             }
             base.Update(gameTime);

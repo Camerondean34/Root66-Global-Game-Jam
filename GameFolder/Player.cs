@@ -56,6 +56,8 @@ namespace Root66.GameFolder
             {
                 yPosition += yChange;
             }
+            //TODO Implement speed changes, so the player can alter their speed?
+
             GiveFuel(-0.05f * speedRatio);
         }
 
