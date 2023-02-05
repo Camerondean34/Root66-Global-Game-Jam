@@ -138,7 +138,7 @@ namespace Root66
                             if (obstical.IntersectsWith(player))
                             {
                                 obstical.Effect(player);
-                                if (obstical is not Person && obstical is not Car)
+                                if (player.Alive && obstical is not Person)
                                 {
                                     gameSprites.RemoveAt(index);
                                     index--;
