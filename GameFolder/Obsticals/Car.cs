@@ -20,7 +20,7 @@ namespace Root66.GameFolder.Obsticals
 
         public override void Update(GameTime deltaTime)
         {
-            xChange = xChange * 1.8f;
+            xChange = xChange + 10;
             base.Update(deltaTime);
         }
 

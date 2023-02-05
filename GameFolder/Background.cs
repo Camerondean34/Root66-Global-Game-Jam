@@ -47,5 +47,11 @@ namespace Root66.GameFolder
             secondSprite.Draw(spriteBatch);
             base.Draw(spriteBatch);
         }
+
+        public override void Reset()
+        {
+            if (secondSprite != null) secondSprite.Reset();
+            base.Reset();
+        }
     }
 }

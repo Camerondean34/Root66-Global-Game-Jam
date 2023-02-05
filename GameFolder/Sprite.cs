@@ -54,5 +54,10 @@ namespace Root66.GameFolder
         {
             return rectangle.Intersects(s.rectangle);
         }
+
+        public bool IntersectsWith(float x, float y)
+        {
+            return rectangle.Contains(x, y);
+        }
     }
 }

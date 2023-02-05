@@ -11,7 +11,7 @@ namespace Root66.GameFolder
 
         public Obstical(Texture2D pSpriteTexture, int pScreenWidth, int pScreenHeight, int pDrawWidth, int pDrawHeight) : base(pSpriteTexture, pDrawWidth, pDrawHeight, -100, -100)
         {
-            SetPosition(pScreenWidth, (float)new Random().NextFloat(pScreenHeight * 0.22f, (pScreenHeight * 0.725f) - pDrawHeight));
+            SetPosition(pScreenWidth, (float)new Random().Next(pScreenHeight * 220, (pScreenHeight * 725) - (pDrawHeight * 1000)) / 1000);
         }
 
         public override void Update(GameTime deltaTime)
